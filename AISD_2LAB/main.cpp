@@ -281,6 +281,7 @@ public:
     }
 };
 
+
 int main() {
     Polynomial<double> poly;
     poly.addTerm(0.0, 2);
