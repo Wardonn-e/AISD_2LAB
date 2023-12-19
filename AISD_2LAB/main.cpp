@@ -1,15 +1,22 @@
-//
-//  main.cpp
-//  AISD_2LAB
-//
-//  Created by Роман Казаев on 19.12.2023.
-//
-
 #include <iostream>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
-}
+using namespace std;
 
+template<typename T>
+struct Node {
+    Node<T>* _next;
+    T _data;
+    Node(const T& data, Node<T>* next = nullptr) : _data(data), _next(next) {}
+};
+
+template<typename T>
+class LinkedList {
+private:
+    Node<T>* _head;
+public:
+    LinkedList() : _head(nullptr) {}
+};
+
+int main() {
+    LinkedList<int> a;
+}
