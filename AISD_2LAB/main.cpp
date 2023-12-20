@@ -76,33 +76,29 @@ public:
             return;
         }
         Node<T>* temp = _head;
-        while (temp->_next != _head) {
+        while (temp->_next != _head)
+        {
             temp = temp->_next;
         }
         temp->_next = new_head;
         new_head->_next = _head;
         _head = new_head;
     }
-
     void push_tail(const T& data) {
-            Node<T>* new_node = new Node<T>(data);
-
-            if (!_head) {
-                _head = new_node;
-                _head->_next = nullptr;
-                return;
-            }
-
-            Node<T>* temp = _head;
-            while (temp->_next) {
-                temp = temp->_next;
-            }
-
-            temp->_next = new_node;
-            new_node->_next = nullptr;
+        Node<T>* new_head = new Node<T>(data);
+        if (!_head) {
+            _head = new_head;
+            _head->_next = _head;
+            return;
         }
-
-
+        Node<T>* temp = _head;
+        while (temp->_next != _head)
+        {
+            temp = temp->_next;
+        }
+        temp->_next = new_head;
+        new_head->_next = _head;
+    }
     void push_head(LinkedList a) {
         a.push_tail(*this);
         swap(a);
@@ -227,16 +223,6 @@ public:
     }
 };
 
-float get_value(LinkedList<int>& a) {
-    Node<int>* ptr = a.get_head();
-    size_t size = a.size();
-    float val = 0;
-    for (size_t i = 0; i < size; i++) {
-        val += pow(a[i], i);
-    }
-    return val;
-}
-
 template<typename T>
 struct Term {
     T coefficient;
@@ -261,22 +247,24 @@ public:
     T evaluate(T x) const {
         T result = 0;
         Node<Term<T>>* ptr = terms.get_head();
-        while (ptr) {
+        Node<Term<T>>* ptr_aisd = terms.get_head();
+        do {
             result += ptr->_data.coefficient * pow(x, ptr->_data.exponent);
             ptr = ptr->_next;
-        }
+        } while(ptr != ptr_aisd);
         return result;
     }
 
     void print() const {
         Node<Term<T>>* ptr = terms.get_head();
-        while (ptr) {
+        Node<Term<T>>* ptr_head = terms.get_head();
+        do {
             std::cout << ptr->_data.coefficient << "x^" << ptr->_data.exponent;
             ptr = ptr->_next;
-            if (ptr) {
+            if (ptr != ptr_head) {
                 std::cout << " + ";
             }
-        }
+        } while (ptr != ptr_head);
         std::cout << std::endl;
     }
 };
@@ -284,16 +272,54 @@ public:
 
 int main() {
     Polynomial<double> poly;
-    poly.addTerm(0.0, 2);
     poly.addTerm(2.0, 3);
-    poly.addTerm(3.0, 4);
-    poly.addTerm(4.0, 5);
-    poly.addTerm(5.0, 6);
+    poly.addTerm(-1.5, 2);
+    poly.addTerm(1.0, 1);
+    poly.addTerm(4.5, 0);
+
     poly.print();
 
     double x = 2.0;
     double result = poly.evaluate(x);
 
-    std::cout << "Result x: " << x << " is: " << result << std::endl;
+    std::cout << "x = " << x << " is: " << result << std::endl;
+
+    
+    
+    
+    
+    
+    LinkedList<int> list;
+
+    list.push_head(3);
+    list.push_head(2);
+    list.push_head(1);
+
+    list.push_tail(4);
+    list.push_tail(5);
+    list.push_tail(6);
+
+    cout << "list: ";
+    list.print();
+    cout << endl;
+
+    Node<int>* head = list.get_head();
+    if (head) {
+        cout << "Head value: " << head->_data << endl;
+    }
+
+    cout << "Element at index 2: " << list[2] << endl;
+
+    list.pop_head();
+    list.pop_tail();
+
+    list.delete_node(3);
+
+    cout << "Modified list: ";
+    list.print();
+    cout << endl;
+
     return 0;
+    
 }
+
