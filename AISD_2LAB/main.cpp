@@ -7,10 +7,11 @@ struct Term {
     T coefficient;
     int exponent;
 
-    Term(T coeff, int exp) {
+    Term(T coeff, int exp = 1) {
         coefficient = coeff;
         exponent = exp;
     }
+    
 };
 template<typename T>
 struct Node {
@@ -230,48 +231,40 @@ public:
         delete tail;
     }
 
-    void delete_node(const T& data) {
-        if (!_head) {
-            return;
-        }
-
+    void delete_node(const int& data) {
+        Node<T>* ded_node = new Node(data);
         Node<T>* current = _head;
-        Node<T>* previous = nullptr;
 
-        do {
-            if (current->_data == data) {
-                if (current == _head) {
-                    // Удаляемый узел - первый в списке
-                    if (current->_next == _head) {
-                        // Список состоит только из одного элемента
-                        delete current;
-                        _head = nullptr;
-                        return;
-                    }
-
-                    // Обновляем указатель на голову
-                    _head = current->_next;
-                } else {
-                    // Удаляемый узел не первый в списке
-                    previous->_next = current->_next;
-                }
-
-                // Удаляем текущий узел
-                Node<T>* temp = current;
-                current = current->_next;
-                delete temp;
-
-                // Если узел был последним, обновляем указатель на голову
-                if (current == _head) {
-                    _head = previous->_next;
-                }
-            } else {
-                // Переходим к следующему узлу
-                previous = current;
-                current = current->_next;
+        while (current->_next != _head) {
+            if (current->_next->_data == data) {
+                Node<T>* repair_node = current->_next->_next;
+                delete current->_next;
+                current->_next = repair_node;
             }
-        } while (current != _head);
+            else
+                current = current->_next;
+        }
+        if (_head->_data == data)
+            pop_head();
+
     }
+    void delete_node(const Term<int>& data) {
+        Node<T>* ded_node = new Node(data);
+        Node<T>* current = _head;
+
+        while (current->_next != _head) {
+            if (current->_next->_data.coefficient == data.coefficient && current->_next->_data.exponent == data.exponent) {
+                Node<T>* repair_node = current->_next->_next;
+                delete current->_next;
+                current->_next = repair_node;
+            }
+            else
+                current = current->_next;
+        }
+        if (_head->_data.exponent == data.exponent && _head->_data.coefficient == data.coefficient)
+            pop_head();
+    }
+
 
 
     Node<T>* get_head() const {
@@ -280,58 +273,26 @@ public:
 };
 
 int main() {
-    // Создаем пустой список
+    LinkedList<Term<int>> l;
+    Term<int> l1(2,2);
+    Term<int> l2(3,2);
+    Term<int> l3(4,2);
+    l.push_head(l1);
+    l.push_head(l2);
+    l.push_tail(l2);
+    l.push_head(l3);
+    l.delete_node(l2);
+    l.printTerms();
+    
     LinkedList<int> list1;
-
-    // Добавляем элементы в конец списка
     list1.push_tail(1);
     list1.push_tail(2);
     list1.push_tail(3);
-
-    // Выводим список на экран
-    cout << "List 1: ";
+    list1.push_head(2);
+    list1.push_tail(2);
+    list1.delete_node(2);
     list1.print();
-    cout << endl;
 
-    // Создаем список с рандомными значениями
-    LinkedList<int> list2(5, 10, 20);
-
-    // Выводим список на экран
-    cout << "List 2: ";
-    list2.print();
-    cout << endl;
-
-    // Создаем список из термов
-    LinkedList<Term<int>> list3;
-    list3.push_tail(Term<int>(2, 3));
-    list3.push_tail(Term<int>(-1, 2));
-    list3.push_tail(Term<int>(4, 0));
-    list3.push_tail(Term<int>(0, 2)); // проверяем, можно ли добавить Term с коэф = 0
-
-    // Выводим список термов на экран
-    cout << "List 3 (Terms): ";
-    list3.printTerms();
-    cout << endl;
-
-    // Вычисляем значение многочлена для x=2
-    double result = list3.evaluate(2);
-    cout << "Result of evaluating List 3 at x=2: " << result << endl;
-
-    // Добавляем один список в конец другого
-    list1.push_tail(list2);
-
-    // Выводим объединенный список на экран
-    cout << "Combined List 1 after adding List 2: ";
-    list1.print();
-    cout << endl;
-
-    // Удаляем первый элемент из списка
-    list1.pop_head();
-
-    // Выводим список после удаления первого элемента
-    cout << "List 1 after popping head: ";
-    list1.print();
-    cout << endl;
 
     return 0;
 }
